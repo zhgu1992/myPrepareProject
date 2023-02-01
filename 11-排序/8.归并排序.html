@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    const input = [3, 7, 2, 9, 4, 8, 1, 5, 6]; // [1,2,3,4,5,6,7,8,9]
+    function mergeSortFunc(arr){
+        mergeSort(arr, 0, arr.length - 1);
+        return arr;
+    }
+    // 空间复杂度O(N)，时间复杂度O(NLogN)，稳定
+    // [L, R]
+    function mergeSort(arr, L, R) {
+        if(L >= R){
+            return;
+        }
+        // 使用二分法处理
+         const M = Math.floor((L+R)/2);
+        // 递归划分左半区
+         mergeSort(arr, L, M);
+         // 递归划分右半区
+         mergeSort(arr, M+1, R);
+         // 对其进行归并排序
+         merge(arr, L, M+1, R);
+    }
+    // [2, 3, 7, 9] [1, 4, 5, 6, 8]
+    function merge(arr, L, M, R) {
+        const left = arr.slice(L, M);
+        const  leftSize = M-L;
+        const right = arr.slice(M, R+1);
+        const rightSize = R+1-M;
+        let li = 0;
+        let ri = 0;
+        let k = L;
+        while (li< leftSize && ri < rightSize){
+            const leftItem = left[li];
+            const rightItem = right[ri];
+            if(leftItem < rightItem){
+                arr[k] = leftItem;
+                k++;
+                li++;
+            }else{
+                arr[k] = rightItem;
+                k++;
+                ri++;
+            }
+        }
+
+            while (ri < rightSize){
+                arr[k] = right[ri];
+                k++;
+                ri++;
+            }
+
+
+            while (li < leftSize){
+                arr[k] = left[li];
+                k++;
+                li++;
+            }
+            return arr;
+    }
+    // const arr1 = [2, 3, 7, 9, 1, 4, 5, 6, 8];
+    // console.log(merge(arr1, 0, 4, 8));
+    console.log(mergeSortFunc(input));
+</script>
+
+</body>
+</html>

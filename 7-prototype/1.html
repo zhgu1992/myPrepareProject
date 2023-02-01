@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    function Animal(name){
+        this.name = name;
+    }
+    Animal.prototype.getName = function () {
+        return this.name;
+    }
+    // step1 先继承构造函数，子类构造函数中使用父类的构造函数并绑定子类的this
+    function Car(name){
+        Animal.call(this, name);
+    }
+    // step2 子类的prototype指向父类的prototype，需要浅拷贝一下
+    Car.prototype = Object.create(Animal.prototype);
+    // 构造函数需要改变一下
+    Car.prototype.constructor = Car;
+    Car.prototype.getCar = function () {
+        console.log('这是car的函数')
+    }
+    // 测试
+    const test1 = new Car('test1');
+    const test2 = new Car('test2');
+    test1.name = 'tttt';
+    console.log(test1.getName());
+    console.log(test2.getName());
+    // 父类
+    const parent = new Animal('parent');
+    try{
+        parent.getCar();
+    }catch (e) {
+        console.log(e);
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    const input = [3, 7, 2, 9, 4, 8, 1, 5, 6]; // [1,2,3,4,5,6,7,8,9]
+    // 两两比较，最大的冒泡到最后去即可，外层循环进行扫描，里层循环进行比较，每次结束，下一次比较数-1
+    // 复杂度 n*n， 稳定
+    function bubbleSort(arr) {
+        for(let len = arr.length, i = len-1 ; i > 0; i--){ // 扫描len-1次
+            for(let j = 0; j < i; j++){
+                if(arr[j] > arr[j+1]){
+                    const temp = arr[j];
+                    arr[j] = arr[j+1];
+                    arr[j+1] = temp;
+                }
+            }
+        }
+        return arr;
+    }
+    console.log(bubbleSort(input));
+</script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+
+
+    // 浅拷贝，拷贝值如果是一般类型，拷贝的为基本类型的值，属性为引用数据类型，拷贝的是内存地址
+    function shallowClone(source) {
+        const newObj = {};
+        const keys = Object.keys(source);
+        for(let i in keys){
+            const key = keys[i];
+            newObj[key] = source[key];
+        }
+        return newObj;
+    }
+    // 深拷贝，拷贝值如果是一般类型，拷贝的为基本类型的值，属性为引用数据类型，会创建一个新的对象
+    function deepClone(source, cache = new WeakMap()) {
+        // 判断为非引用类型
+        if(typeof source !== 'object' || source ===  null){
+            return source;
+        }
+        if(cache.get(source)){
+            return cache.get(source);
+        }
+        // 如果为引用类型则创建新对象
+
+        if(source instanceof Map){
+            const newObj = new Map();
+            cache.set(source,newObj);
+            source.forEach((v, key)=>{
+                newObj.set(key, deepClone(v, cache));
+            });
+            return newObj;
+        }else if(source instanceof Set){
+            const newObj = new Set();
+            cache.set(source,newObj);
+            source.forEach((v)=>{
+                newObj.add(deepClone(v, cache));
+            });
+            return newObj;
+        }else if(source instanceof Date){
+            const newObj = new Date(source);
+            return newObj;
+        }else if(source instanceof RegExp){
+            const newObj = new RegExp(source);
+            return newObj;
+        }
+        else{ // 其他对象
+            const newObj = new source.constructor();
+            cache.set(source,newObj);
+            Object.keys(source).forEach(key=>{
+                newObj[key] = deepClone(source[key], cache);
+            });
+            return newObj;
+        }
+    }
+
+    const person = {
+        // name: '科比',
+        hobby: [{name: '科比'},2,3],
+        symbol: Symbol('a'),
+        tt: new Date(1),
+        getName:()=>{
+            console.log('test');
+        },
+        test1: [new Set([2]), new Map([[1,1]])],
+        reg: new RegExp('tt')
+    };
+    person.my = person;
+    // const shadllowPerson = shallowClone(person);
+    // shadllowPerson.hobby[0]=1000;
+    // console.log(person.hobby);
+    // console.log(shadllowPerson.hobby);
+
+
+    const deepPerson = deepClone(person);
+    deepPerson.getName = ()=>{
+        console.log('test111');
+    }
+    deepPerson.my.hobby[0].name='111';
+    console.log(person);
+    console.log(deepPerson);
+</script>
+
+</body>
+</html>

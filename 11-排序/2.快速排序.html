@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    const input = [3, 7, 2, 9, 4, 8, 1, 5, 6]; // [1,2,3,4,5,6,7,8,9]
+    function quickSortFunc(arr) {
+        quickSort(arr, 0, arr.length - 1);
+        return arr;
+    }
+    // 2分法排序
+    // 0 , length-1
+    // 使用卡尺的思路进行置换，只需要把小于基准的数据和卡尺处置换位置，则卡尺位置即为基准位置的正确值
+    function quickSort(arr, left, right){
+        if(left >= right){
+            return;
+        }
+        const pivot = right;
+        let index = left;
+        for(let i = left; i < right; i++){
+            if(arr[i] < arr[pivot]){
+                swap(i, index, arr);
+                index++;
+            }
+        }
+        swap(index, right, arr);
+        quickSort(arr, left, index - 1);
+        quickSort(arr, index+1, right);
+    }
+
+    function swap(i, j, arr){
+        const temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+
+
+    /**
+     * 这种方式不可取哦，空间复杂度太高，问题代码
+     * @param arr
+     * @returns {*}
+     */
+    function quickSort1(arr){
+        if(arr.length <=1) return arr;
+        const leftArr = [];
+        const rightArr = [];
+        const pivot = arr[0];
+        for (let i = 1, len = arr.length; i < len; i++){
+            if(arr[i] <= pivot){
+                leftArr.push(arr[i]);
+            }else{
+                rightArr.push(arr[i]);
+            }
+        }
+        return quickSort1(leftArr)
+            .concat([pivot])
+            .concat(quickSort1(rightArr));
+    }
+
+    console.log(quickSort(input));
+</script>
+</body>
+</html>

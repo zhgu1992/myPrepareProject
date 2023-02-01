@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <script>
+        /**
+         * 单向链表
+         * head --》next即可
+         * 能找到下一个节点但不能找到上一个节点
+         * 文本编辑软件常用双向链表来回退之前但内容，我们editor的history也是一个双向链表，方便回退和前进
+         */
+        class LinkedList{
+             head = null;
+             length = 0;
+             append(data){
+                 const newNode = new Node(data);
+                 // 如果是第一个节点
+                 if(this.length === 0){
+                     this.head = newNode;
+                 }else{
+                     let current = this.head;
+                     while (current.next){
+                         current = current.next;
+                     }
+                     current.next = newNode;
+                 }
+                 this.length++;
+             }
+             insert(pos, data){
+                 if(pos < 0 || pos > this.length) return false;
+                 const newNode = new Node(data);
+                 if(pos === 0){
+                     newNode.next = this.head;
+                     this.head = newNode;
+                 }else{
+                     let index = 0;
+                     let currentNode = this.head;
+                     let previousNode = null;
+                     while (index < pos){
+                         previousNode = currentNode;
+                         currentNode = currentNode.next;
+                         index++;
+                     }
+                     previousNode.next = newNode;
+                     newNode.next = currentNode;
+                 }
+                 this.length++;
+                 return true;
+
+             }
+             get(pos) {
+                 if(pos < 0 || pos >= this.length) return;
+                 let index = 0;
+                 let current = this.head;
+                 while (index < pos){
+                     current = current.next;
+                     index++;
+                 }
+                 return current.data;
+             }
+             update(pos, data){
+                 if(pos < 0 || pos >= this.length) return;
+                 let index = 0;
+                 let current = this.head;
+                 while (index < pos){
+                     current = current.next;
+                     index++;
+                 }
+                 current.data = data;
+             }
+             indexOf(data){
+                 let index = 0;
+                 let current = this.head;
+                 while (current){
+                     if(current.data === data){
+                         return index;
+                     }
+                     current = current.next;
+                     index++;
+                 }
+                 return -1;
+             }
+             removeAt(pos){
+                 if(pos<0 || pos>= this.length) return false;
+                 let index = 0;
+                 let preNode = null;
+                 let curNode = this.head;
+                 if(pos === 0){
+                     this.head = curNode.next;
+                     return true;
+                 }
+                 while (index < pos){
+                     preNode = curNode;
+                     curNode = curNode.next;
+                     index++;
+                 }
+                 const nextNode = curNode.next;
+                 preNode.next = nextNode;
+                 this.length--;
+                 return true;
+             }
+             remove(data){
+                 const pos = this.indexOf(data);
+                 return this.removeAt(pos);
+                 // let preNode = null;
+                 // let curNode = this.head;
+                 // while (curNode){
+                 //     if(curNode.data === data){
+                 //         if(!preNode){ //为第一个元素
+                 //             this.head = curNode.next;
+                 //         }else{
+                 //             preNode.next = curNode.next;
+                 //         }
+                 //         this.length--;
+                 //         return true;
+                 //     }else{
+                 //         preNode = curNode;
+                 //         curNode = curNode.next;
+                 //     }
+                 // }
+                 // return false;
+             }
+             size(){
+                 return this.length;
+             }
+             toString(){
+                 let current = this.head;
+                 let result = '';
+                 while (current){
+                     result += current.data.toString() + ',';
+                     current = current.next;
+                 }
+                 return result;
+             }
+        }
+        class Node {
+            constructor(data, next){
+                this.data = data;
+                this.next = next || null;
+            }
+        }
+
+        const link = new LinkedList();
+        link.append(10);
+        link.append(15);
+        link.append(18);
+        link.append(20);
+        console.log(link.toString());
+        console.log(link.get(1));
+        console.log(link.indexOf(15));
+        // console.log(link.removeAt(1));
+        console.log(link.remove(18));
+        console.log(link.toString());
+    </script>
+</body>
+</html>

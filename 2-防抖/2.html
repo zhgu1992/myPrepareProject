@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <input type = "text" id = "1" >
+    <script>
+        const input = document.getElementById('1');
+        // 防抖函数：反复输入，最后一次间隔1s后打印一次
+        function debounce( delay) {
+            let timer = null;
+            return (callback)=>{
+                clearTimeout(timer);
+                timer = setTimeout(()=>{
+                    callback();
+                }, delay);
+            };
+        }
+        const func = debounce(1000);
+        input.addEventListener('keyup', (e)=>{
+            func(()=>{
+                console.log(e.target.value);
+            })
+        })
+
+    </script>
+</body>
+</html>

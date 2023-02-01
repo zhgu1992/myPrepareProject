@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>6
+<script>
+    Array.prototype.reduceArr = function (fn, initValue) {
+        if(typeof fn !== "function"){
+            throw new Error('not function');
+        }
+        const arr = this;
+        let pre = initValue !== undefined ? initValue : arr[0];
+        let index = initValue !== undefined ? 0: 1;
+        for(let i = index, len = arr.length; i < len; i++){
+            pre = fn(pre, arr[i], i, arr);
+        }
+        return pre;
+    }
+    const arr = [0, 1, 2, 3, 4, 5];
+    const res = arr.reduceArr((pre, cur) =>{
+        return pre + cur;
+    });
+    console.log(res);
+
+</script>
+
+</body>
+</html>

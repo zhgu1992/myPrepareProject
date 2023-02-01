@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<button id="1">截流测试：1s内点击100次只执行一次</button>
+<script>
+
+    function closure(fn, delay){
+        let timeout = null;
+        return ()=> {
+            if(!timeout){
+                timeout = setTimeout(()=>{
+                    fn();
+                    timeout = null
+                }, delay);
+            }
+        }
+    }
+    document.getElementById("1").onclick = closure(()=>{
+        console.log('执行成功')
+    }, 1000)
+</script>
+
+</body>
+</html>

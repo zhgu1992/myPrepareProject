@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    // 手写实现call、apply
+    // 作用：改变this的指向
+    // 使用场景：js的继承
+    const Person = {
+        getName: function (a = 0, b = 0) {
+            // console.log(this);
+            return this.name + a + b;
+        }
+    };
+    const person1 = {
+        name: 1
+    };
+    console.log(Person.getName.call(person1, 2, 3)); // 6
+
+    // 手写call
+    Function.prototype.myCall = function (context, ...args) {
+        // 判断this必须为函数
+        // 取出参数
+        // const args = [...arguments].slice(1);
+        // 判断this必须为函数
+        if(typeof this !== 'function'){
+            throw new Error('not function');
+        }
+        context.fn = this;
+        return context.fn(...args);
+
+    };
+
+    console.log(Person.getName.myCall(person1, 2, 3)); // 6
+    console.log(Person.getName.myCall(person1)); // 1
+
+
+    // 手写apply
+    Function.prototype.myApply = function (context, args) {
+        // 判断this必须为函数
+        if(typeof this !== 'function'){
+            throw new Error('not function');
+        }
+        context.fn = this;
+        if(args){
+            return context.fn(...args);
+        }else{
+            return context.fn();
+        }
+
+
+    };
+
+    console.log(Person.getName.apply(person1, [2,3])); // 6
+    console.log(Person.getName.apply(person1)); // 1
+    console.log(Person.getName.myApply(person1, [2,3])); // 6
+    console.log(Person.getName.myApply(person1)); // 1
+</script>
+
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+
+    function isPrime(num) {
+        const temp = Math.ceil(Math.sqrt(num));
+        for(let i = 2; i < temp; i++){
+            if(num % i === 0){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function getPrime(num){
+        while (!isPrime(num)){
+            num++;
+        }
+        return num;
+    }
+
+    class HashMap{
+        static loadFactor = 0.75; //扩容系数
+        static loadFactor_min = 0.25; //缩小系数
+        static min = 11;//limit最小值
+        constructor(){
+            this.storage = []; //数组存储元素
+            this.count = 0; // 个数
+            this.limit = 11; // 总数
+        }
+        // 存放{key, value}
+        // step1：设置哈希函数，将key 映射到数组下标
+        // 将key的字符串转化为数组索引
+        hashFunc(str,  max) {
+            let hashCode = 0;
+            let hashRatio = 31; // 选取一个质数
+            for(let i = 0; i < str.length; i++){
+                hashCode = hashRatio * hashCode + str.charCodeAt(i);
+            }
+            return hashCode % max;
+        }
+        // 放入元素, {name: 'zhgu'}, {age: 567}
+        set(key, value){
+            // 获取index
+            const index = this.hashFunc(key, this.limit);
+            // 因为会有重复，每个下标值对应的数据可以使用数组或者链表表达
+            let bucket = this.storage[index];
+            if(bucket === undefined){
+                bucket = [];
+                this.storage[index] = bucket;
+            }
+            let overWrite = false;
+            for(let i = 0, len = bucket.length; i < len; i++){
+                const curData = bucket[i];
+                if(curData[0] === key){
+                    curData[1] = value;
+                    overWrite = true;
+                    break;
+                }
+            }
+            if(!overWrite){
+                bucket.push([key, value]);
+                this.count++;
+                if(this.count > this.limit * HashMap.loadFactor){
+                    this.resize(getPrime(this.limit * 2));
+                }
+            }
+        }
+        get(key){
+            const index = this.hashFunc(key, this.limit);
+            const bucket = this.storage[index];
+            if(!bucket) return;
+            for(let i = 0,len = bucket.length; i < len; i++){
+                const curData = bucket[i];
+                if(curData[0] === key){
+                    return curData[1];
+                }
+            }
+        }
+        delete(key){
+            const index = this.hashFunc(key, this.limit);
+            const bucket = this.storage[index];
+            if(!bucket) return;
+            for(let i = 0,len = bucket.length; i < len; i++){
+                const curData = bucket[i];
+                if(curData[0] === key){
+                    bucket.splice(i, 1);
+                    this.count--;
+                    if(this.count < this.limit * HashMap.loadFactor_min && this.limit > HashMap.min){
+                        this.resize(getPrime(Math.floor(this.limit/2)));
+                    }
+                    return curData[1];
+                }
+            }
+        }
+        size(){
+            return this.count;
+        }
+        isEmpty(){
+            return this.count === 0;
+        }
+
+        resize(newLimit){
+            // 扩容
+            this.limit = newLimit;
+            let oldStorage = this.storage;
+            // 重置数据
+            this.storage = [];
+            this.count = 0;
+            oldStorage.forEach(bucket=>{
+                bucket.forEach(data=>{
+                    this.set(data[0], data[1]);
+                })
+            });
+            oldStorage = null;
+        }
+    }
+
+
+    const hashMap = new HashMap();
+    hashMap.set('name', 'zhgu');
+    hashMap.set('age', '18');
+    hashMap.set('handsome', 'true');
+    hashMap.set('height', '180');
+    console.log(hashMap.get('handsome'));
+    console.log(hashMap.delete('age'));
+    console.log(hashMap.count);
+    console.log(hashMap);
+
+
+</script>
+</body>
+</html>

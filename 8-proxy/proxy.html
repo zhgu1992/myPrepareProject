@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <input id = 'input'/>
+    <p id = 'p'/>
+</head>
+<body>
+<script>
+    const input = document.getElementById('input');
+    const p = document.getElementById('p');
+    const obj = {};
+    const proxy = new Proxy(obj, {
+        get: function (target, key, receiver) {
+            return Reflect.get(target, key, receiver);
+        },
+        set: function (target, key, value, receiver) {
+            if(key === 'text'){
+                p.innerHTML = value;
+            }
+            return Reflect.set(target, key, value, receiver);
+        }
+    })
+
+    input.onkeyup = (ev)=>{
+        proxy.text = ev.target.value;
+        console.log(proxy.text);
+    }
+
+</script>
+</body>
+</html>

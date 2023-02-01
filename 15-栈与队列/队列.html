@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    class Queue{
+        constructor(){
+            this.items = [];
+        }
+
+        enqueue(v){
+            this.items.push(v);
+        }
+
+        dequeue(){
+            return this.items.shift();
+        }
+        size(){
+            return this.items.length;
+        }
+        front(){
+            return this.items[0];
+        }
+    }
+
+    // 击鼓传花
+
+    function passGame(list, num) {
+        const queue = new Queue();
+        for(let i = 0, len = list.length; i < len; i++){
+            queue.enqueue(list[i]);
+        }
+
+        while (queue.size() > 1){
+            // 如果不是num，则叫到一个人都放后排
+            for(let i = 0; i < num - 1; i++){
+                // 依次删除，再加入队列尾部
+                queue.enqueue(queue.dequeue());
+            }
+            // 找到被淘汰的人
+            queue.dequeue();
+        }
+        const person = queue.front();
+        return list.indexOf(person);
+    }
+
+    const names = ['lily', 'lucy', 'tom', 'lilei', 'why'];
+    console.log(passGame(names, 3));
+</script>
+</body>
+</html>

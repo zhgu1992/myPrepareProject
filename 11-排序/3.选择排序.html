@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    const input = [3, 7, 2, 9, 4, 8, 1, 5, 6]; // [1,2,3,4,5,6,7,8,9]
+    // 2 3
+    // 核心每次选择最小的
+    // 每次找到最小数的索引，将其换到最前面来
+    // o(n*n),空间复杂度o(n)，稳定
+    function selectionSort(arr) {
+        for(let i = 0, len = arr.length; i < len; i++){
+            let minIndex = i;
+            for(let j = i+1; j < len; j++){
+                if(arr[j] < arr[minIndex]) {
+                    minIndex = j;
+                }
+            }
+            const temp = arr[i];
+            arr[i] = arr[minIndex];
+            arr[minIndex] = temp;
+        }
+        return arr;
+    }
+    console.log(selectionSort(input));
+</script>
+
+</body>
+</html>

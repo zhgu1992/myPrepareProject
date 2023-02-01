@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+        // // 测试
+        // console.log('test1');
+        // const promise = new Promise((resolve, reject)=>{
+        //     console.log('test2');
+        //     setTimeout(()=>{
+        //         resolve('测试');
+        //         console.log('test4');
+        //     });
+        // });
+        // promise.then(res=>{console.log(res); return 'test5'}, res=>{console.log(res)}).then(res=>{
+        //     console.log(res);
+        // });
+        // console.log('test3');
+
+    // myPromise、race、all
+        class MyPromise{
+            state = 'pending';
+            constructor(func){
+                this.result = null;
+                this.resolveFuncArr = [];
+                this.rejectFuncArr = [];
+                const resolve = (result)=>{
+                    if(this.state === 'pending'){
+                        this.state = 'fulfilled';
+                        this.result = result;
+                        this.resolveFuncArr.forEach(func=>{
+                            func();
+                        });
+                    }
+                };
+                const reject = (result)=>{
+                    if(this.state === 'pending') {
+                        this.state = 'rejected';
+                        this.result = result;
+                        this.rejectFuncArr.forEach(func => {
+                            func();
+                        })
+                    }
+                };
+
+                try {
+                    func(resolve, reject);
+                } catch (e) {
+                    reject(this.result);
+                }
+            }
+
+            static resolve(result) {
+                return new MyPromise((resolve, reject)=>{
+                    resolve(result);
+                });
+            }
+
+            static reject(result){
+                return new MyPromise((resolve, reject)=>{
+                    reject(result);
+                });
+            }
+
+            then(onFinish, onError){
+                onFinish = typeof onFinish === 'function' ? onFinish : ()=>{};
+                onError = typeof onError === 'function' ? onError : ()=>{};
+                function resolvePromise(v, resolve, reject){
+                    if(v instanceof MyPromise){
+                        v.then(resolve, reject);
+                    }else{
+                        resolve(v);
+                    }
+                }
+
+                return new MyPromise((resolve, reject)=>{
+                    if(this.state === 'fulfilled'){
+                        setTimeout(()=>{
+                            const finish = onFinish(this.result);
+                            resolvePromise(finish, resolve, reject);
+                        });
+                    }
+                    if(this.state === 'rejected'){
+                        setTimeout(()=> {
+                            const error = onError(this.result);
+                            reject(error);
+                        });
+                    }
+                    if(this.state === 'pending'){
+                        this.resolveFuncArr.push(()=>{
+                            setTimeout(()=> {
+                                const finish = onFinish(this.result);
+                                resolvePromise(finish, resolve, reject);
+                            });
+                        });
+                        this.rejectFuncArr.push(()=>{
+                            setTimeout(()=> {
+                                const error = onError(this.result);
+                                reject(error);
+                            });
+                        });
+
+                    }
+                });
+
+            }
+
+            static all(promiseArr){
+                const result = [];
+                let i = 0;
+                return new MyPromise((resolve, reject) =>{
+                    promiseArr.forEach((promise, key) =>{
+                        promise.then(res =>{
+                            result[key] = res;
+                            i++;
+                            if(i ===  promiseArr.length){
+                               resolve(result);
+                            }
+                        }, err=>{
+                            reject(err);
+                        })
+                    });
+                });
+            }
+
+            static allSettled(promiseArr){
+                const result = [];
+                let i = 0;
+                const len = promiseArr.length;
+                return new MyPromise((resolve, reject)=>{
+                    promiseArr.forEach(promise=>{
+                        promise.then(res =>{
+                            result[key] = {
+                                status: 'fulfilled',
+                                value: res
+                            };
+                            i++;
+                            if(i===len){
+                                resolve(result);
+                            }
+                        })
+                    }, err=>{
+                        result[key] = {
+                            status: 'rejected',
+                            reason: err
+                    };
+                        i++;
+                        if(i===len){
+                            resolve(result);
+                        }
+                    })
+                });
+            }
+
+            static race(promiseArr){
+                return new MyPromise((resolve, reject) =>{
+                    promiseArr.forEach(promise=>{
+                        promise.then(resolve, reject)
+                    })
+                })
+            }
+        }
+
+        //
+        // const promise1 = new Promise((resolve, reject)=>{
+        //     setTimeout(()=>{
+        //         resolve(200);
+        //     }, 200)
+        // });
+        // const promise2 = new Promise((resolve, reject)=>{
+        //     setTimeout(()=>{
+        //         resolve(300);
+        //     }, 300)
+        // });
+        // const promise3 = new Promise((resolve, reject)=>{
+        //     setTimeout(()=>{
+        //         resolve(500);
+        //     }, 500)
+        // });
+        // Promise.allSettled([promise1, promise2, promise3]).then(res=>{
+        //     console.log(res);
+        // });
+        // Promise.all([promise1, promise2, promise3]).then(res=>{
+        //     console.log(res);
+        // });
+        // Promise.race([promise1, promise2, promise3]).then(res=>{
+        //     console.log(res);
+        // });
+
+
+        // const myPromise1 = new MyPromise((resolve, reject)=>{
+        //     resolve(200);
+        // });
+        // const myPromise2 = new MyPromise((resolve, reject)=>{
+        //     resolve(300);
+        // });
+        // const myPromise3 = new MyPromise((resolve, reject)=>{
+        //     resolve(500);
+        // });
+        // MyPromise.all([myPromise1, myPromise2, myPromise3]).then(res=>{
+        //     console.log(res);
+        // });
+        // MyPromise.race([myPromise1, myPromise2, myPromise3]).then(res=>{
+        //     console.log(res);
+        // });
+
+
+        // console.log('test,200');
+        // const myPromise = new MyPromise((resolve, reject)=>{
+        //     resolve('test');
+        // });
+        // const my1 = myPromise.then(v=>{
+        //     console.log(v);
+        //     // return 200;
+        //     return new MyPromise((resolve, reject)=>{
+        //         resolve(200);
+        //     })
+        // });
+        // my1.then(v=>{
+        //     console.log(v);
+        // })
+
+
+        // console.log('1,2,3,4,测试,5');
+        // console.log('------------MyPromise-------------');
+        // console.log('test1');
+        // const myPromise = new MyPromise((resolve, reject)=>{
+        //     console.log('test2');
+        //     setTimeout(()=>{
+        //         resolve('测试');
+        //         console.log('test4');
+        //     });
+        // });
+        // myPromise.then(res=>{console.log(res); return 'test5'})
+        //     .then(res=>{
+        //     console.log(res);
+        // });
+        // console.log('test3');
+
+</script>
+</body>
+</html>

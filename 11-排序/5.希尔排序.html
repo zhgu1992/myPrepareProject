@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    const input = [3, 7, 2, 9, 4, 8, 1, 5, 6]; // [1,2,3,4,5,6,7,8,9]
+    // 按间隔进行插入排序，先写插入排序，然后把1改成间隔即可
+    // 复杂度，平均n1.3，最坏n*n,稳定，空间复杂度o1
+    function shellSort(arr) {
+        const len = arr.length;
+        for(let gap = Math.floor(len/2); gap > 0; gap = Math.floor(gap/2)){
+            for(let i = gap; i < len; i++){//除了这里别的全用gap，这里是往后查找遍历
+                const current = arr[i];
+                let j = i-gap;
+                while (j >= 0 && current < arr[j]) {
+                    arr[j+gap]  = arr[j];
+                    j= j-gap;
+                }
+                arr[j+gap] = current;
+            }
+        }
+        return arr;
+    }
+    console.log(shellSort(input));
+</script>
+</body>
+</html>

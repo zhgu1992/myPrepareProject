@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    const input = [3, 7, 2, 9, 4, 8, 1, 5, 6]; // [1,2,3,4,5,6,7,8,9]
+    function quickSort(arr) {
+        function swap(i, j, arr){
+            const temp = arr[i];
+             arr[i] = arr[j];
+             arr[j] = temp;
+        }
+        function quickSortFunc(arr, left, right){
+            if(left >= right) return;
+            const pivor = arr[right];
+            let index = left;
+            // 通过pivor来划分左右
+            for(let i = left; i < right; i++){
+                if(arr[i] < pivor){
+                    swap(i, index, arr);
+                    index++;
+                }
+            }
+            swap(index, right, arr);
+            quickSortFunc(arr, left, index - 1);
+            quickSortFunc(arr, index+1, right);
+        }
+        quickSortFunc(arr, 0, arr.length-1);
+        return arr;
+    }
+
+    console.log(quickSort(input));
+
+</script>
+
+</body>
+</html>

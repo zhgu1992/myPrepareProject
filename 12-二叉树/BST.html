@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    class Node{
+        constructor(data){
+            this.data = data;
+            this.left = null;
+            this.right = null;
+        }
+    }
+    // 二叉搜索树，查询和插入效率极高
+    class BinarySearchroot{
+        constructor(){
+            this.root = null;
+        }
+        insert(key){
+            const node = new Node(key);
+            if(!this.root){
+                this.root = node;
+            }else{
+                this.insertNode(this.root, node);
+            }
+        }
+
+        insertNode(node, newNode){
+            const left = node.left;
+            const right = node.right;
+            if(newNode.data > node.data){
+                if(right === null){
+                    node.right = newNode;
+                }else{
+                    this.insertNode(right, newNode);
+                }
+            }else{
+                if(left === null){
+                    node.left = newNode;
+                }else{
+                    this.insertNode(left, newNode);
+                }
+            }
+        }
+        search(key){
+           return searchNode(this.root, key);
+           function searchNode(node, key) {
+               if(!node) return;
+               if(node.data === key) return node;
+               if(node.data > key){
+                   return searchNode(node.left, key);
+               }else{
+                   return searchNode(node.right, key);
+               }
+           }
+        }
+        remove(key){
+            let current = this.root;
+            let parent = null;
+            let isLeftChildren = true;
+            while (current.data !== key){
+                if(current === null){
+                    // 该节点未找到
+                    return false;
+                }
+                parent = current;
+                if (current.data > key){
+                    current = current.left;
+                    isLeftChildren = true;
+                }else{
+                    current = current.right;
+                    isLeftChildren = false;
+                }
+            }
+            //1.如果是叶子节点
+            if(current.left === null && current.right === null){
+                // 如果是根节点
+                if(parent === null){
+                    this.root = null;
+                }
+                else if(isLeftChildren){
+                    parent.left = null;
+                }else{
+                    parent.right = null;
+                }
+            }
+            //2.删除只有一个子节点的节点
+            // 左节点为null
+            else if(current.left === null || current.right === null ){
+                let item = current.left ? current.left : current.right;
+                //如果是根节点
+                if(parent === null){
+                    this.root = item;
+                }
+                if(isLeftChildren){
+                    parent.left = item;
+                }else{
+                    parent.right = item;
+                }
+            }
+            //3.删除有两个子节点的节点
+            else{
+                //首先，寻找前驱（左子树的最右节点 ）或者找后继(右子树的最左节点)
+                const successor = this.getSuccessor(current);
+                if(parent === null){
+                    this.root = successor;
+                    successor.left = current.left;
+                }else if(isLeftChildren){
+                    parent.left = successor;
+                }else{
+                    parent.right = successor;
+                }
+                successor.left = current.left;
+            }
+
+        }
+        // todo 寻找后继
+        getSuccessor(delNode){
+            // 定义变量，保存要找到的后续
+            let successor = delNode;
+            let current = delNode.right;
+            let successorParent = delNode;
+
+            // 循环查找 current 的右子树节点
+            while (current !== null) {
+                successorParent = successor;
+                successor = current;
+                current = current.left;
+            }
+
+            // 判断寻找到的后续节点是否直接就是要删除节点的 right
+            if (successor !== delNode.right) {
+                successorParent.left = successor.right;
+                successor.right = delNode.right;
+            }
+            return successor;
+        }
+        // 中序遍历
+        inOrderTraverse(){
+            this.traverseOrder(this.root);
+        }
+        // 先序遍历
+        preOrderTraverse(){
+            this.traversePre(this.root);
+        }
+        // 后序遍历
+        postOrderTraverse(){
+            this.traversePost(this.root);
+        }
+        traversePre(node){
+            if(node === null) return;
+            const left = node.left;
+            const right = node.right;
+            console.log(node.data);
+            this.traversePre(left);
+            this.traversePre(right);
+        }
+        traverseOrder(node){
+            if(node === null) return;
+            const left = node.left;
+            const right = node.right;
+            this.traverseOrder(left);
+            console.log(node);
+            this.traverseOrder(right);
+        }
+        traversePost(node){
+            if(node === null) return;
+            const left = node.left;
+            const right = node.right;
+            this.traversePost(left);
+            this.traversePost(right);
+            console.log(node);
+        }
+        min(){
+            // 最左边
+            let current = this.root;
+            while (current.left){
+                current = current.left;
+            }
+            return current.data;
+        }
+        max(){
+            // 最右边
+            let current = this.root;
+            while (current.right){
+                current = current.right;
+            }
+            return current.data;
+        }
+    }
+
+
+    // 测试
+    const root = new BinarySearchroot();
+    root.insert(9);
+    root.insert(5);
+    root.insert(10);
+    root.insert(3);
+    root.insert(7);
+    root.insert(4);
+    console.log(root);
+    root.preOrderTraverse();
+    console.log('-----------');
+    console.log(root.min());//3
+    console.log(root.max());//10
+    console.log(root.search(3))
+</script>
+</body>
+</html>

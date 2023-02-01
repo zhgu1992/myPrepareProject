@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    const input = [3, 7, 2, 9, 4, 8, 1, 5, 6]; // [1,2,3,4,5,6,7,8,9]
+    // 从i节点heapify，tree为堆，默认情况下认为孩子节点已经构建为堆
+    function heapify(tree, h, i) {
+        if(i >= h){
+            return;
+        }
+        const c1 = i*2 + 1;
+        const c2 = i*2 + 2;
+        let max = i;
+        if(c1 < h && tree[c1] > tree[max]){
+            max = c1;
+        }
+        if(c2 < h && tree[c2] > tree[max]){
+            max = c2;
+        }
+        if(max !== i){ // 如果被交换了，孩子节点可能被破坏，需要递归计算
+            // swap
+            swap(tree, i, max);
+            heapify(tree, h, max);
+        }
+    }
+
+    // 时间复杂度o(nlogn),不稳定
+    function heapSort(arr) {
+        const n = arr.length;
+        const lastIndex = n -1;
+        // 1.建堆 时间复杂度o(n)
+        for(let i = Math.floor((lastIndex-1)/2); i >= 0; i--){
+            heapify(arr, n, i);
+        }
+        // 2.排序 O(logN) *N
+        for(let i = n-1; i>=0; i--){
+            swap(arr, 0, i);
+            heapify(arr, i, 0);
+        }
+        return arr;
+    }
+
+    function swap(arr, i, j) {
+        const temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+
+    console.log(heapSort(input));
+</script>
+</body>
+</html>

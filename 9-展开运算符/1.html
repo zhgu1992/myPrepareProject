@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    // const obj = {x: 1, y: 2, z: 3}
+    // const b = ...obj // respect [1,2,3]
+
+    const obj = {x:1, y:2, z:3};
+
+    // 如果要使用展开运算符，需要重写迭代器
+    obj[Symbol.iterator] = function(){
+        return {
+            next: function () {
+                const keys = Reflect.ownKeys(obj);
+                if(this.index < keys.length - 1){
+                    const value = obj[keys[this.index]];
+                    this.index++;
+                    return {
+                        value,
+                        done: false
+                    }
+                }else{
+                    return {done: true};
+                }
+
+            },
+            index: 0
+        }
+    }
+    const res = [...obj];
+    console.log(res);
+</script>
+
+</body>
+</html>

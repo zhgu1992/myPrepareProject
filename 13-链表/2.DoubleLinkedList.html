@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    class DoubleLinkedList{
+        head = null;
+        length = 0;
+        tail = null;
+        append(data){
+            const node = new Node(data);
+            if(!this.head){
+                this.head = node;
+                this.tail = node;
+            }else{
+                let tail = this.tail;
+                tail.next = node;
+                node.prev = tail;
+                this.tail = node;
+            }
+            this.length++;
+        }
+        forwardString(){
+            let current = this.head;
+            let str = '';
+            while (current){
+                str += current.data + ',';
+                current = current.next;
+            }
+            return str;
+        }
+        backwardString(){
+            let current = this.tail;
+            let str = '';
+            while (current){
+                str += current.data + ',';
+                current = current.prev;
+            }
+            return str;
+        }
+        insert(pos, data){
+            if(pos > this.length || pos < 0) return false;
+            if(pos === 0){
+                const head = this.head;
+                const node = new Node(data, null, head);
+                head.prev = node;
+                this.head = node;
+                this.length++;
+                return true;
+            }else if(pos===this.length){
+                this.append(data);
+                return true;
+            }
+            let current = this.head;
+            let index = 0;
+            while (index < pos){
+                current = current.next;
+                index++;
+            }
+            const preNode = current.prev;
+            const node = new Node(data, preNode, current);
+            preNode.next = node;
+            current.prev = node;
+            this.length++;
+            return true;
+        }
+        get(pos){
+            if(pos >= this.length || pos < 0) return;
+            let index = 0;
+            let current = this.head;
+            while (index < pos){
+                current = current.next;
+                index++;
+            }
+            return current.data;
+        }
+        indexOf(data){
+            let current = this.head;
+            let index = 0;
+            while (current){
+                if(current.data === data){
+                    return index;
+                }else{
+                    index++;
+                    current = current.next;
+                }
+            }
+            return -1;
+        }
+        update(pos, data){
+            if(pos >= this.length || pos < 0) return false;
+            let index = 0;
+            let current = this.head;
+            while (index < pos){
+                current = current.next;
+                index++;
+            }
+            current.data = data;
+            return true;
+        }
+        removeAt(pos){
+            if(pos >= this.length || pos < 0) return false;
+            let current = this.head;
+            let index = 0;
+            // head
+            if(pos === 0){
+                const head = this.head;
+                this.head = head.next;
+                this.head.prev = null;
+                this.length--;
+                return true;
+            }else if(pos === this.length -1){
+                const tail = this.tail;
+                this.tail = tail.prev;
+                this.tail.next = null;
+                this.length--;
+                return true;
+            }
+            // tail
+            while (current){
+                if(index === pos){// 找到数据
+                    const prev = current.prev;
+                    const next = current.next;
+                    prev.next = next;
+                    next.prev = prev;
+                    this.length--;
+                    return true;
+                }else{
+                    index++;
+                    current = current.next;
+                }
+            }
+
+        }
+        remove(data){
+            const index = this.indexOf(data);
+            return this.removeAt(index);
+        }
+        size(){
+            return this.length;
+        }
+
+    }
+    class Node{
+        constructor(data, prev, next){
+            this.data = data;
+            this.prev = prev || null;
+            this.next = next || null;
+        }
+    }
+
+    const link = new DoubleLinkedList();
+    link.append(10);
+    link.append(18);
+    link.append(6);
+    link.append(2);
+    link.insert(1, 888888);
+    link.insert(0, -888888);
+    link.remove(18);
+    console.log(link.forwardString());
+    console.log(link.backwardString());
+    console.log(link.size());
+    console.log(link.get(3));
+    console.log(link.indexOf(888888));
+</script>
+</body>
+</html>

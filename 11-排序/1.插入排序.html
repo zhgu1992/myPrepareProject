@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    const input = [3, 7, 2, 9, 4, 8, 1, 5, 6]; // [1,2,3,4,5,6,7,8,9]
+    // 1，5，6, [2,3,4,7,8,9]
+    // [3], 7
+    // 最好的情况为n，最坏为n*n，空间复杂度 o(1), 稳定
+    // 每次比较一个数字，将其插入到其中
+    function insertSort(arr) {
+        for(let i = 1, len = arr.length; i < len; i++){
+            const current = arr[i];
+            let j = i - 1;
+            while (j >= 0 && current < arr[j]){
+                arr[j+1] = arr[j];
+                j--;
+            }
+            arr[j+1] = current;
+        }
+        return arr;
+    }
+
+    console.log(insertSort(input));
+
+</script>
+
+</body>
+</html>

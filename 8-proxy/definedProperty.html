@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <input id = 'input'/>
+    <p id = 'p'/>
+</head>
+<body>
+<script>
+    const input = document.getElementById('input');
+    const p = document.getElementById('p');
+    const obj = {};
+    let text;
+    Object.defineProperty(obj, 'text', {
+        get: function(){
+            return text;
+        },
+        set: function(val){
+            p.innerHTML = val;
+            text = val;
+        }
+    });
+
+    input.onkeyup = (ev)=>{
+        obj.text = ev.target.value;
+        console.log(obj.text);
+    }
+</script>
+</body>
+</html>

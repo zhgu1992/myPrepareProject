@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    class Stack{
+        constructor(){
+            this.items = [];
+        }
+        push(v){
+            this.items.push(v);
+        }
+        pop(){
+            this.items.pop();
+        }
+        isEmpty(){
+            return this.items.length === 0;
+        }
+        size(){
+            return this.items.length;
+        }
+    }
+
+
+    function dec2bin(decNumber) {
+        const stack = new Stack();
+        while (decNumber > 0){
+            stack.push( decNumber % 2);
+            decNumber = Math.floor(decNumber/2);
+        }
+        let str = '';
+        while (!stack.isEmpty()) {
+            str += stack.pop();
+        }
+        return str;
+
+    }
+</script>
+</body>
+</html>
