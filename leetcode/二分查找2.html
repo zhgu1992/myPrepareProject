@@ -6,9 +6,72 @@
 </head>
 <body>
 <script>
-    // arr = [1,2,3,4,5,5,7,7];
-    // const findArr(arr, 5) // 2
+    // arr = [1,2,2,2,3,3];
+    // const findLeftArr(arr, 5) // 4
     // 要求复杂度o(logN)
+
+
+    // 2,2
+
+
+    function findLeftArr(arr, item){
+            let left = 0;
+            let right = arr.length -1;
+
+            while (left < right){
+                const mid = left + Math.floor((right-left)/2);
+                if(arr[mid] < item){
+                    left = mid + 1;
+                }else {
+                    right = mid;
+                }
+
+            }
+            return left;
+    }
+
+
+    function findRightArr(arr, item){
+        let left = 0;
+        let right = arr.length -1;
+
+        while (left < right){
+            const mid = left + Math.floor((right-left+1)/2);
+            if(arr[mid] > item){
+                right = mid-1;
+            }else {
+                left = mid;
+            }
+
+        }
+        return left;
+    }
+
+    // 通用方法，left < right - 1,最后找到两个数，需要再次比较
+    function findRight1(arr, item) {
+        let left = 0;
+        let right = arr.length -1;
+
+        while (left < right - 1){
+            const mid = left + Math.floor((right-left)/2);
+            if(arr[mid] <= item){
+                left = mid;
+            }else{
+                right = mid;
+            }
+        }
+        // 看left和right谁更接近
+        if(arr[right] < item ) return right;
+        if(arr[left] > item) return left;
+        return arr[right] - item >  item - arr[left] ? left: right;
+    }
+
+
+    const arr = [1,2,3,4,5,5,7,7];
+    console.log(findLeftArr(arr, 5));
+    console.log(findRightArr(arr, 5));
+
+    console.log(findRight1(arr, 2.5));
 </script>
 </body>
 </html>

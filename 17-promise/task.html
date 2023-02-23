@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    const timeout = time => new Promise(resolve=> setTimeout(resolve, time));
+    class Scheduler{
+        list = [];
+        max = 3;
+        current = 0;
+        add(promise){
+            this.list.push(promise);
+        }
+        start(){
+            for(let i = 0; i < this.max; i++){
+                this.doNext();
+            }
+
+        }
+        doNext(){
+            if(this.list.length > 0 && this.current < this.max ){
+                this.current++;
+                this.list.shift()().then(()=>{
+                    this.current--;
+                    this.doNext();
+                })
+            }
+        }
+        addTask(time, order){
+            this.add(()=>{
+                return timeout(time).then(v=>{
+                    console.log(order);
+                })
+            })
+
+        }
+    }
+    const sche = new Scheduler();
+
+
+
+    sche.addTask(1000, 1);
+    sche.addTask(500, 2);
+    sche.addTask(300, 3);
+    sche.addTask(400, 4);
+    sche.start();
+</script>
+</body>
+</html>

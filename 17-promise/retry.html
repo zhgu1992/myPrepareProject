@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+     async function delay(time) {
+        return new Promise(async (resolve, reject)=>{
+            setTimeout(()=>{
+                    fetch('https://www.bilibili.com/video/BV1BF41147q3/?spm_id_from=333.337.search-card.all.click&vd_source=927e3e4a1cfc178d95ec11d39012c406').then(v=>{
+                        resolve(v);
+                    }).catch(e=>{
+                        reject(e);
+                    });
+            }, time);
+        })
+    }
+
+
+    async function retry(fn, delayTime, times) {
+        return new Promise(async (resolve, reject)=>{
+            try {
+                const res = await fn(delayTime);
+                resolve(res);
+            }catch (e) {
+                if(times > 1){
+                    await retry(fn, delayTime, times - 1);
+                }else {
+                    reject('失败')
+                }
+
+            }
+        }).catch(e=>{
+            console.log(e);
+        });
+
+    }
+
+    retry(delay, 1000, 10);
+</script>
+</body>
+</html>
